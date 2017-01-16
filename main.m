@@ -1,11 +1,14 @@
 clc;clear all;
-sunrgbd_path = '/c16/THESE.JORIS/datasets/SUNRGBD/';
+% sunrgbd_path = '/c16/THESE.JORIS/datasets/SUNRGBD/';
+% sunrgbd_target_path = '/c16/THESE.JORIS/datasets/SUNRGBD_pv/data';
+
+sunrgbd_target_path = '/data/workspace/datasets/SUNRGBD_pv/data';
+sunrgbd_path = '/data/workspace/datasets/SUNRGBD/';
 addpath(genpath(fullfile(sunrgbd_path, 'SUNRGBDtoolbox')));
 % load(fullfile(sunrgbd_path, 'SUNRGBDtoolbox/Metadata/', 'SUNRGBDMeta.mat'))
 load(fullfile(sunrgbd_path, 'jg_toolbox_sunrgbd/', 'SUNRGBDMeta2DBB_v2.mat'))
 
 
-sunrgbd_target_path = '/c16/THESE.JORIS/datasets/SUNRGBD_pv/data';
 nb_image = length(SUNRGBDMeta2DBB);
 
 %% Loop
@@ -32,7 +35,7 @@ for ii = 1:1
     mystruct.annotation.folder = 'data';
     mystruct.annotation.filename = data.rgbname(1:end-4); % without extension
     mystruct.annotation.source.database = 'The SUNRGBD database';
-    mystruct.annotation.source.annotation = 'SUNRGBD';
+    mystruct.annotation.source.sensorType = data.sensorType;
     mystruct.annotation.source.image = 'Princeton';
     mystruct.annotation.owner = 'B. Zhou et al';
     mystruct.annotation.size.width = size(a_rgb,2);
@@ -45,10 +48,10 @@ for ii = 1:1
         mystruct.annotation.object(k).pose = 'unknown';
         mystruct.annotation.object(k).truncated = -1;
         mystruct.annotation.object(k).difficult = 0;
-        mystruct.annotation.object(k).bndbox.xmin = data.groundtruth2DBB(k).gtBb2D(1);
-        mystruct.annotation.object(k).bndbox.ymin = data.groundtruth2DBB(k).gtBb2D(2);
-        mystruct.annotation.object(k).bndbox.xmax = data.groundtruth2DBB(k).gtBb2D(1)+data.groundtruth2DBB(k).gtBb2D(3)-1;
-        mystruct.annotation.object(k).bndbox.ymax = data.groundtruth2DBB(k).gtBb2D(2)+data.groundtruth2DBB(k).gtBb2D(4)-1;
+        mystruct.annotation.object(k).bndbox.xmin = max(1,floor(data.groundtruth2DBB(k).gtBb2D(1)));
+        mystruct.annotation.object(k).bndbox.ymin = max(1,floor(data.groundtruth2DBB(k).gtBb2D(2)));
+        mystruct.annotation.object(k).bndbox.xmax = min(size(a_rgb,2),floor(data.groundtruth2DBB(k).gtBb2D(1)+data.groundtruth2DBB(k).gtBb2D(3)-1));
+        mystruct.annotation.object(k).bndbox.ymax = min(size(a_rgb,1),floor(data.groundtruth2DBB(k).gtBb2D(2)+data.groundtruth2DBB(k).gtBb2D(4)-1));
     end
     
     xml_path = fullfile(sunrgbd_target_path,'Annotations_37');
