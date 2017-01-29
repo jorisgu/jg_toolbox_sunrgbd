@@ -1,11 +1,22 @@
 clc;clear all;close all;
-addpath('/c16/THESE.JORIS/matlab_toolbox/jg_toolbox_nyud_v2','/c16/THESE.JORIS/matlab_toolbox/colorspace_toolbox')
-sunrgbd_path = '/c16/THESE.JORIS/datasets/SUNRGBD/';
-data_path = '/c16/THESE.JORIS/datasets/SUNRGBD_pv/data';
+
+matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
+dataset_path = '/home/jogue/workspace/datasets/';
+
+% matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
+% dataset_path = '/c16/THESE.JORIS/datasets';
+
+
+addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
+sunrgbd_path = fullfile(dataset_path,'SUNRGBD');
+data_path = fullfile(dataset_path,'SUNRGBD_pvf/data');
 
 % sunrgbd_target_path = '/data/workspace/datasets/SUNRGBD_pv/data';
 % sunrgbd_path = '/data/workspace/datasets/SUNRGBD/';
 addpath(genpath(fullfile(sunrgbd_path, 'SUNRGBDtoolbox')));
+
+
+
 % load(fullfile(sunrgbd_path, 'SUNRGBDtoolbox/Metadata/', 'SUNRGBDMeta.mat'))
 load('./SUNRGBDMeta2DBB_v2.mat');
 
@@ -28,9 +39,13 @@ end
 
 
 %% Loop
+counter=0;
+averageTime = -1;
+tStart = tic;
 for ii = 1:nb_image
-% for ii = 10000:10010
-    
+    % for ii = 1947:1947
+    % for ii = 10000:10010
+    %     break
     
     data = SUNRGBDMeta2DBB(ii);
     depthpath = fullfile(sunrgbd_path,'data',data.depthpath(25:end));
@@ -88,10 +103,13 @@ for ii = 1:nb_image
     
     
     %% annotations
+    folders = strsplit(data.sequenceName,'/');
+    
     mystruct.annotation.folder = 'data';
     mystruct.annotation.filename = data.depthname;
     mystruct.annotation.source.database = 'The SUNRGBD database';
     mystruct.annotation.source.sensorType = data.sensorType;
+    mystruct.annotation.source.sequence = folders{3};
     mystruct.annotation.source.image = 'Princeton';
     mystruct.annotation.owner = 'B. Zhou et al';
     mystruct.annotation.size.width = size(a_rgb,2);
@@ -116,10 +134,24 @@ for ii = 1:nb_image
     disp('Annotations_37')
     
     %% Intrinsics
-    %     intrinsic_source = fullfile(sunrgbd_path,'data',data.sequenceName(9:end),'intrinsics.txt');
-    %     intrinsic_destination_folder = fullfile(data_path,'intrinsics');
-    %     if ~exist(intrinsic_destination_folder, 'dir')
-    %         mkdir(intrinsic_destination_folder);
-    %     end
-    %     copyfile(intrinsic_source,fullfile(intrinsic_destination_folder,strcat(a_name,'.txt')))
+    intrinsic_source = fullfile(sunrgbd_path,'data',data.sequenceName(9:end),'intrinsics.txt');
+    intrinsic_destination_folder = fullfile(data_path,'intrinsics');
+    if ~exist(intrinsic_destination_folder, 'dir')
+        mkdir(intrinsic_destination_folder);
+    end
+    copyfile(intrinsic_source,fullfile(intrinsic_destination_folder,strcat(a_name,'.txt')))
+    
+    
+    
+        tElapsed = toc(tStart);
+    tStart = tic;
+    averageTime = (averageTime*counter+tElapsed)/(counter+1);
+    counter=counter+1;
+    estimatedTimeLeft = averageTime*(nb_image-counter);
+    hoursLeft = floor(estimatedTimeLeft/3600);
+    minutesLeft = floor((estimatedTimeLeft - hoursLeft*3600)/60);
+    SecondsLeft = floor(estimatedTimeLeft-3600*hoursLeft-60*minutesLeft);
+    disp(strcat('######################### Estimated time left :   ',num2str(hoursLeft),'h ',num2str(minutesLeft),'mn ',num2str(SecondsLeft), 's #########################'))
 end
+
+close all
