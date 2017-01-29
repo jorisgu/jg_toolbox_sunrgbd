@@ -105,48 +105,48 @@ end
 
 
 % GuptaSetsPath = '/c16/THESE.JORIS/matlab_toolbox/rcnn-depth/eccv14-data/benchmarkData/metadata';
-GuptaSetsPath = '/home/jogue/workspace/rcnn-depth/eccv14-data/benchmarkData/metadata';
-load(fullfile(GuptaSetsPath,'eccv14-splits.mat'))
-sets_path = fullfile(data_path ,'sets','nyudv2_gupta');
-if ~exist(sets_path, 'dir')
-    mkdir(sets_path);
-end
-
-indice_Test = test - 5000;
-indice_Val = val - 5000;
-indice_TrainOnly = train - 5000;
-
-fileID = fopen(fullfile(sets_path,'testGupta.txt'),'w');
-for ii = 1:numel(indice_Test)
-    num_image = nyudv2_subset(indice_Test(ii));
-    fprintf(fileID,'%04d\n', num_image);
-end
-fclose(fileID);
-
-fileID = fopen(fullfile(sets_path,'valGupta.txt'),'w');
-for ii = 1:numel(indice_Val)
-    num_image = nyudv2_subset(indice_Val(ii));
-    fprintf(fileID,'%04d\n', num_image);
-end
-fclose(fileID);
-
-fileID = fopen(fullfile(sets_path,'trainGupta.txt'),'w');
-for ii = 1:numel(indice_TrainOnly)
-    num_image = nyudv2_subset(indice_TrainOnly(ii));
-    fprintf(fileID,'%04d\n', num_image);
-end
-fclose(fileID);
-
-fileID = fopen(fullfile(sets_path,'trainvalGupta.txt'),'w');
-for ii = 1:numel(indice_TrainOnly)
-    num_image = nyudv2_subset(indice_TrainOnly(ii));
-    fprintf(fileID,'%04d\n', num_image);
-end
-for ii = 1:numel(indice_Val)
-    num_image = nyudv2_subset(indice_Val(ii));
-    fprintf(fileID,'%04d\n', num_image);
-end
-fclose(fileID);
+% GuptaSetsPath = '/home/jogue/workspace/rcnn-depth/eccv14-data/benchmarkData/metadata';
+% load(fullfile(GuptaSetsPath,'eccv14-splits.mat'))
+% sets_path = fullfile(data_path ,'sets','nyudv2_gupta');
+% if ~exist(sets_path, 'dir')
+%     mkdir(sets_path);
+% end
+% 
+% indice_Test = test - 5000;
+% indice_Val = val - 5000;
+% indice_TrainOnly = train - 5000;
+% 
+% fileID = fopen(fullfile(sets_path,'testGupta.txt'),'w');
+% for ii = 1:numel(indice_Test)
+%     num_image = nyudv2_subset(indice_Test(ii));
+%     fprintf(fileID,'%04d\n', num_image);
+% end
+% fclose(fileID);
+% 
+% fileID = fopen(fullfile(sets_path,'valGupta.txt'),'w');
+% for ii = 1:numel(indice_Val)
+%     num_image = nyudv2_subset(indice_Val(ii));
+%     fprintf(fileID,'%04d\n', num_image);
+% end
+% fclose(fileID);
+% 
+% fileID = fopen(fullfile(sets_path,'trainGupta.txt'),'w');
+% for ii = 1:numel(indice_TrainOnly)
+%     num_image = nyudv2_subset(indice_TrainOnly(ii));
+%     fprintf(fileID,'%04d\n', num_image);
+% end
+% fclose(fileID);
+% 
+% fileID = fopen(fullfile(sets_path,'trainvalGupta.txt'),'w');
+% for ii = 1:numel(indice_TrainOnly)
+%     num_image = nyudv2_subset(indice_TrainOnly(ii));
+%     fprintf(fileID,'%04d\n', num_image);
+% end
+% for ii = 1:numel(indice_Val)
+%     num_image = nyudv2_subset(indice_Val(ii));
+%     fprintf(fileID,'%04d\n', num_image);
+% end
+% fclose(fileID);
 
 
 
