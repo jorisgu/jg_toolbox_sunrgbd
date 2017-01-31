@@ -1,25 +1,26 @@
-% clear all;close all; clc;
-% % matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
-% % dataset_path = '/home/jogue/workspace/datasets/';
-% 
-% matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
-% dataset_path = '/c16/THESE.JORIS/datasets';
-% 
-% 
-% addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
-% sunrgbd_path = fullfile(dataset_path,'SUNRGBD');
-% data_path = fullfile(dataset_path,'SUNRGBD_pvf/data');
-% 
-% 
-% 
-% pathToMat = '/c16/THESE.JORIS/datasets/SUNRGBD/SUNRGBDtoolbox/Metadata/SUNRGBD2Dseg.mat';
-% disp('Opening mat file')
-% matObj = matfile(pathToMat); 
-% 
-% % 13 % 15 % 39 % 53 % 65 % 159 % 195 % 265 % 689 % 795 % 2067 % 3445
-% nb_image = 10335;
-% divider = 3445;
-% a_extension = 'png';
+clear all;close all; clc;
+% matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
+% dataset_path = '/home/jogue/workspace/datasets/';
+
+matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
+dataset_path = '/c16/THESE.JORIS/datasets';
+
+
+addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
+sunrgbd_path = fullfile(dataset_path,'SUNRGBD');
+data_path = fullfile(dataset_path,'SUNRGBD_pvf/data');
+
+
+
+pathToMat = '/c16/THESE.JORIS/datasets/SUNRGBD/SUNRGBDtoolbox/Metadata/SUNRGBD2Dseg.mat';
+disp('Opening mat file')
+matObj = matfile(pathToMat); 
+disp('done.')
+% 13 % 15 % 39 % 53 % 65 % 159 % 195 % 265 % 689 % 795 % 2067 % 3445
+nb_image = 10335;
+divider = 3445;
+a_extension = 'png';
+
 for i=1:divider:10335
     disp('##########################################################')
     disp(strcat('Loading first values : [',int2str(i),',',int2str(i+divider-1),']'))
