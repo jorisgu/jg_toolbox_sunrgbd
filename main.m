@@ -1,15 +1,15 @@
 clc;clear all;close all;
 
-% matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
-% dataset_path = '/home/jogue/workspace/datasets/';
+matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
+dataset_path = '/home/jogue/workspace/datasets/';
 
-matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
-dataset_path = '/c16/THESE.JORIS/datasets';
+% matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
+% dataset_path = '/c16/THESE.JORIS/datasets';
 
 
 addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
 sunrgbd_path = fullfile(dataset_path,'SUNRGBD');
-data_path = fullfile(dataset_path,'SUNRGBD_pvf/data');
+data_path = fullfile(dataset_path,'SUNRGBD_pv/data');
 
 % sunrgbd_target_path = '/data/workspace/datasets/SUNRGBD_pv/data';
 % sunrgbd_path = '/data/workspace/datasets/SUNRGBD/';
@@ -25,7 +25,9 @@ nb_image = length(SUNRGBDMeta2DBB);
 a_extension = 'png';
 
 
-
+%% HHA dependencies :
+addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/rgbdutils')
+addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/mcg/depth_features')
 
 
 % subfolder = 'Annotations_37';
@@ -42,7 +44,8 @@ a_extension = 'png';
 counter=0;
 averageTime = -1;
 tStart = tic;
-for ii = 1:nb_image
+% for ii = 1:nb_image
+for ii = 1:1
     % for ii = 1947:1947
     % for ii = 10000:10010
     %     break
@@ -59,11 +62,11 @@ for ii = 1:nb_image
     disp(strcat('Processing image n°', num2str(ii), '/', num2str(nb_image),' : ',a_name,'[',data.sensorType,']'))
     
     a_rgb = imread(rgbpath);
-    a_d_raw = imread(depthpath);
-    
+    depthVis = imread(depthpath);
+    a_d_raw = bitor(bitshift(depthVis,-3), bitshift(depthVis,16-3));
+    a_d_raw(a_d_raw > 8000)=8; % a_d_raw : depth info in mm on uint16
     
     %% rgb
-    %     saveIt( a_rgb, data_path, 'rgb_3x8bits', a_name, a_extension);
     %     saveIt( a_rgb, data_path, 'rgb_i_100_8bits', a_name, a_extension);
     %     disp('rgb_i_100_8bits')
     %     for jj = 90:-10:10
@@ -72,14 +75,8 @@ for ii = 1:nb_image
     %     end
     
     %% depth
-    %     subfolder = 'depth_16bits';
-    %     dir_path = fullfile(data_path,subfolder);
-    %     if ~exist(dir_path, 'dir')
-    %         mkdir(dir_path);
-    %     end
-    %     img_path = fullfile(dir_path,strcat(a_name,'.',a_extension));
-    %     imwrite(a_d_raw, img_path);
-    saveAllDepths(a_d_raw, data_path, a_name, a_extension);
+    %     saveAllDepths(a_d_raw, data_path, a_name, a_extension);
+    
     
     
     %% Entropy Gray HistogramEq
@@ -93,14 +90,6 @@ for ii = 1:nb_image
     %     a_EGH(:,:,3)=H;
     %     saveIt( a_EGH, data_path, 'rgbd_egh_8bits', a_name, a_extension);
     %     disp('rgbd_egh_8bits')
-    
-    %% rgbd tiff
-    %     a_RGBD=zeros(size(a_d_raw,1),size(a_d_raw,2),4,'uint16');
-    %     a_RGBD(:,:,1:3)=uint16(65535.0/255.0*a_rgb);
-    %     a_RGBD(:,:,4)=a_d_raw;
-    %     saveIt( a_RGBD, data_path, 'rgbd_range01', a_name, 'tif');
-    %     disp('rgbd_range01')
-    
     
     %% annotations
     %     folders = strsplit(data.sequenceName,'/');
@@ -132,7 +121,7 @@ for ii = 1:nb_image
     %     xml_filename = strcat(a_name,'.xml');
     %     struc2xml(mystruct, xml_path, xml_filename)
     %     disp('Annotations_37')
-    %
+    %     %
     %     %% Intrinsics
     %     intrinsic_source = fullfile(sunrgbd_path,'data',data.sequenceName(9:end),'intrinsics.txt');
     %     intrinsic_destination_folder = fullfile(data_path,'intrinsics');
@@ -140,8 +129,9 @@ for ii = 1:nb_image
     %         mkdir(intrinsic_destination_folder);
     %     end
     %     copyfile(intrinsic_source,fullfile(intrinsic_destination_folder,strcat(a_name,'.txt')))
-    %
-    %
+    
+    
+    makeHHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
     
     tElapsed = toc(tStart);
     tStart = tic;
