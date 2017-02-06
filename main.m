@@ -10,6 +10,7 @@ dataset_path = '/home/jogue/workspace/datasets/';
 addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
 sunrgbd_path = fullfile(dataset_path,'SUNRGBD');
 data_path = fullfile(dataset_path,'SUNRGBD_pv/data');
+data_path_spreadout = fullfile(dataset_path,'SUNRGBD_pv/data_spreadout');
 
 % sunrgbd_target_path = '/data/workspace/datasets/SUNRGBD_pv/data';
 % sunrgbd_path = '/data/workspace/datasets/SUNRGBD/';
@@ -19,6 +20,7 @@ addpath(genpath(fullfile(sunrgbd_path, 'SUNRGBDtoolbox')));
 
 % load(fullfile(sunrgbd_path, 'SUNRGBDtoolbox/Metadata/', 'SUNRGBDMeta.mat'))
 load('./SUNRGBDMeta2DBB_v2.mat');
+load('./sun2nyu.mat');
 
 
 nb_image = length(SUNRGBDMeta2DBB);
@@ -29,6 +31,8 @@ a_extension = 'png';
 addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/rgbdutils')
 addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/mcg/depth_features')
 
+%% depth_encodings
+addpath(fullfile(matlab_toolbox,'jg_toolbox_sunrgbd','depth_encodings'))
 
 % subfolder = 'Annotations_37';
 % dir_path = fullfile(data_path,subfolder);
@@ -43,12 +47,12 @@ addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/mcg/depth_features')
 %% Loop
 counter=0;
 averageTime = -1;
+averageTime_hha = 0;
 tStart = tic;
+nb_image = 1449;
 % for ii = 1:nb_image
-for ii = 1:1
-    % for ii = 1947:1947
-    % for ii = 10000:10010
-    %     break
+for ii=kv1_NYUdata_indices %nyudv2 only
+% for ii = 1:1
     
     data = SUNRGBDMeta2DBB(ii);
     depthpath = fullfile(sunrgbd_path,'data',data.depthpath(25:end));
@@ -76,7 +80,10 @@ for ii = 1:1
     
     %% depth
     %     saveAllDepths(a_d_raw, data_path, a_name, a_extension);
+    %     a_d_raw_spreadout = uint16(8.192*a_d_raw); % 8000->65535
+    %     saveAllDepths(a_d_raw_spreadout, data_path_spreadout, a_name, a_extension);
     
+  
     
     
     %% Entropy Gray HistogramEq
@@ -123,15 +130,24 @@ for ii = 1:1
     %     disp('Annotations_37')
     %     %
     %     %% Intrinsics
-    %     intrinsic_source = fullfile(sunrgbd_path,'data',data.sequenceName(9:end),'intrinsics.txt');
+    intrinsic_source = fullfile(sunrgbd_path,'data',data.sequenceName(9:end),'intrinsics.txt');
     %     intrinsic_destination_folder = fullfile(data_path,'intrinsics');
     %     if ~exist(intrinsic_destination_folder, 'dir')
     %         mkdir(intrinsic_destination_folder);
     %     end
     %     copyfile(intrinsic_source,fullfile(intrinsic_destination_folder,strcat(a_name,'.txt')))
     
+
     
-    makeHHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    %% HHA
+    %makeHHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    
+    %% DHA
+     DHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    %% DEA
+     DEA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    %% HES
+    HES(a_d_raw, data_path, a_name, a_extension);
     
     tElapsed = toc(tStart);
     tStart = tic;
@@ -143,5 +159,7 @@ for ii = 1:1
     SecondsLeft = floor(estimatedTimeLeft-3600*hoursLeft-60*minutesLeft);
     disp(strcat('######################### Estimated time left :   ',num2str(hoursLeft),'h ',num2str(minutesLeft),'mn ',num2str(SecondsLeft), 's #########################'))
 end
+
+
 
 close all
