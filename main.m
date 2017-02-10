@@ -1,10 +1,10 @@
 clc;clear all;close all;
 
-matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
-dataset_path = '/home/jogue/workspace/datasets/';
+% matlab_toolbox = '/home/jogue/workspace/matlab_toolbox/';
+% dataset_path = '/home/jogue/workspace/datasets/';
 
-% matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
-% dataset_path = '/c16/THESE.JORIS/datasets';
+matlab_toolbox = '/c16/THESE.JORIS/matlab_toolbox/';
+dataset_path = '/c16/THESE.JORIS/datasets';
 
 
 addpath(fullfile(matlab_toolbox,'jg_toolbox_nyud_v2'),fullfile(matlab_toolbox,'colorspace_toolbox'))
@@ -28,8 +28,11 @@ a_extension = 'png';
 
 
 %% HHA dependencies :
-addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/rgbdutils')
-addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/mcg/depth_features')
+% addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/rgbdutils')
+% addpath('/home/jogue/workspace/rcnn-depth/eccv14-code/mcg/depth_features')
+
+addpath('/c16/THESE.JORIS/archives/rcnn-depth/eccv14-code/rgbdutils')
+addpath('/c16/THESE.JORIS/archives/rcnn-depth/eccv14-code/mcg/depth_features')
 
 %% depth_encodings
 addpath(fullfile(matlab_toolbox,'jg_toolbox_sunrgbd','depth_encodings'))
@@ -52,7 +55,7 @@ tStart = tic;
 nb_image = 1449;
 % for ii = 1:nb_image
 for ii=kv1_NYUdata_indices %nyudv2 only
-% for ii = 1:1
+    % for ii = 1:1
     
     data = SUNRGBDMeta2DBB(ii);
     depthpath = fullfile(sunrgbd_path,'data',data.depthpath(25:end));
@@ -83,7 +86,7 @@ for ii=kv1_NYUdata_indices %nyudv2 only
     %     a_d_raw_spreadout = uint16(8.192*a_d_raw); % 8000->65535
     %     saveAllDepths(a_d_raw_spreadout, data_path_spreadout, a_name, a_extension);
     
-  
+    
     
     
     %% Entropy Gray HistogramEq
@@ -137,17 +140,17 @@ for ii=kv1_NYUdata_indices %nyudv2 only
     %     end
     %     copyfile(intrinsic_source,fullfile(intrinsic_destination_folder,strcat(a_name,'.txt')))
     
-
+    
     
     %% HHA
     %makeHHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
     
     %% DHA
-     DHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    DHA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
     %% DEA
-     DEA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
+    %     DEA(a_d_raw, intrinsic_source, data_path, a_name, a_extension);
     %% HES
-    HES(a_d_raw, data_path, a_name, a_extension);
+    %     HES(a_d_raw, data_path, a_name, a_extension);
     
     tElapsed = toc(tStart);
     tStart = tic;
