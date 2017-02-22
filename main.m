@@ -52,9 +52,9 @@ counter=0;
 averageTime = -1;
 averageTime_hha = 0;
 tStart = tic;
-nb_image = 1449;
-% for ii = 1:nb_image
-for ii=kv1_NYUdata_indices %nyudv2 only
+nb_image = 10335;
+for ii = 1:nb_image
+    % for ii=kv1_NYUdata_indices %nyudv2 only
     % for ii = 1:1
     
     data = SUNRGBDMeta2DBB(ii);
